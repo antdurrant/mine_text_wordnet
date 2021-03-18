@@ -1,0 +1,91 @@
+﻿list,exp
+NGSL,"New General Service List
+
+https://www.newgeneralservicelist.org/
+
+Difficulty groupings have been arbitrarily set as follows:
+
+- Group 1: first 500 words of NGSL by frequency & ""supplementary"" words - months/umbers etc
+- Group 2: next 500 words of NGSL by frequency
+- Group 3: next 1000 words of NGSL by frequency
+- Group 4: remaining NGSL words by frequency (about 800 words)
+
+Author Attribution:
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List. Retrieved from    http://www.newgeneralservicelist.org."
+NGSL + NAWL (Academic),"New Academic Word List (NAWL) & New General Service List (NGSL)
+
+https://www.newgeneralservicelist.org/nawl-new-academic-word-list/
+
+Difficulty groupings have been arbitrarily set as follows: 
+- Group 1: first 500 words of NGSL by frequency & ""supplementary"" words - months/numbers etc
+- Group 2: next 500 words of NGSL by frequency 
+- Group 3: next 1000 words of NGSL by frequency 
+- Group 4: remaining NGSL words by frequency (about 800 words) 
+- Group 5: academic word list (about 950 words)
+
+
+Author Attribution:
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List. Retrieved from    http://www.newgeneralservicelist.org.
+Browne, C., Culligan, B. & Phillips, J. (2013). The New Academic Word List. Retrieved from    http://www.newgeneralservicelist.org."
+NGSL + NBL (Business),"
+NGSL & Business Service List (BSL)
+
+See more concrete information here:
+https://www.newgeneralservicelist.org/bsl-business-service-list
+
+Difficulty groupings have been arbitrarily set as follows: 
+- Group 1: first 500 words of NGSL by frequency & ""supplementary"" words - months/numbers etc
+- Group 2: next 500 words of NGSL by frequency 
+- Group 3: next 1000 words of NGSL by frequency 
+- Group 4: remaining NGSL words by frequency (about 800 words) 
+- Group 5: academic word list (about 1750 words)
+
+Author attribution: 
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List. Retrieved from    http://www.newgeneralservicelist.org.
+Browne, C., and  Culligan, B. (2016). The Business Service List. Retrieved from    http://www.newgeneralservicelist.org.
+"
+NGSL + TOEIC,"Difficulty groupings have been arbitrarily set by me, as follows:
+
+- Group 1: first 500 words of NGSL by frequency & ""supplementary"" words - months/numbers etc
+- Group 2: next 500 words of NGSL by frequency
+- Group 3: next 1000 words of NGSL by frequency
+- Group 4: remaining NGSL words by frequency (about 800 words)
+- Group 5: TOEIC (about 1250 words)
+
+Author Attribution:
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List. Retrieved from    http://www.newgeneralservicelist.org.
+Browne, C., and  Culligan, B. (2016). The TOEIC Service List. Retrieved from    http://www.newgeneralservicelist.org."
+NGSL + NBL + NAWL + TOEIC,"New General Service List + Related Lists (Business, Academic, TOEIC)
+
+https://www.newgeneralservicelist.org
+
+Difficulty groupings have been arbitrarily set as follows:
+
+- Group 1: first 500 words of NGSL by frequency & ""supplementary"" words - months/numbers etc
+- Group 2: next 500 words of NGSL by frequency
+- Group 3: next 1000 words of NGSL by frequency
+- Group 4: remaining NGSL words by frequency (about 800 words)
+- Group 5: BSL, NAWL, TOEIC (about 2800 words)
+
+Author Attribution:
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List. Retrieved from    http://www.newgeneralservicelist.org.
+Browne, C., and  Culligan, B. (2016). The Business Service List. Retrieved from    http://www.newgeneralservicelist.org."
+NGSL-35000,"Difficulty groupings have been arbitrarily set as follows:
+
+- Group 1: first 500 words of NGSL by frequency & ""supplementary"" words - months/numbers etc
+- Group 2: next 500 words of NGSL by frequency
+- Group 3: next 1000 words of NGSL by frequency
+- Group 4: remaining NGSL words by frequency (about 800 words) + NAWL (about 900 words)
+- Groups 5-13: frequency groupings by first significant digit of rank (9,000-9,999, 10,000-19,999, 20,000, 29,999 etc)"
+Wikipedia-5000,A dataset containing the 5000 most frequent words according to wikipedia in 2019. Groups are separated by the thousand.
+Flemma-5000,"A dataset containing the 5000 most frequent flemmas (""form-based-lemma"" - lemmas that can have multiple meanings with the same form) taken from Tom Cobb's lextutor site. Groups are separated by the hundred, and this list is specifically targeted at graded readers.
+
+Author attribution:
+https://www.lextutor.ca/vp/comp/bnc_info.html
+https://www.lextutor.ca/vp/comp/
+https://www.laurenceanthony.net/software/antconc/"
+New Dolch List,"As the Dolch List focuses specifically on the absolute most useful words, it has not been split into difficulty groups, though it would be possible to do so. Please make contact if that would be useful to you.
+
+This list contains the headwords and all members of the word families included in the ""for researchers"" download from the source
+
+https://www.newgeneralservicelist.org/new-dolch-list"

@@ -1,0 +1,13 @@
+name: wordlist-helper
+title: wordlist-helper
+username:
+account: anthonypdurrant
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3765565
+bundleId: 4329600
+url: https://anthonypdurrant.shinyapps.io/wordlist-helper/
+when: 1615445565.34994
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: test.docx|test.pdf
