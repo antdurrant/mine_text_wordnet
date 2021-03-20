@@ -357,7 +357,7 @@ server <- function(input, output) {
 
         text() %>%
           # filter(doc_id %in% input$preview_doc_ids) %>%
-          udpipe(object = "english") %>%
+          udpipe(object = "english")  %>%
           select(doc_id, sentence_id, token_id, token, lemma, upos, sentence) %>%
           get_wordlist(language = input$lang,
                        def = input$def) %>%
@@ -391,14 +391,19 @@ server <- function(input, output) {
     head(text(), 2)
   })
 
+
+  pipe_preview <- reactive({
+    text() %>%
+      filter(doc_id %in% input$preview_doc_ids) %>%
+      udpipe(object = "english")
+  })
+
   # output preview ####
   output$preview_content <- renderDataTable({
 
 
     req(nchar(input$lang) >=1)
-    text() %>%
-      filter(doc_id %in% input$preview_doc_ids) %>%
-      udpipe(object = "english") %>%
+     pipe_preview() %>%
       select(doc_id, sentence_id, token_id, token, lemma, upos, sentence) %>%
       get_wordlist(language = input$lang,
                     def = input$def) %>%
