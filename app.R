@@ -57,7 +57,7 @@ ui <-  fluidPage(
 
     h4("Output Preview"),
  sidebarLayout(
-   sidebarPanel(
+   sidebarPanel(width = 3,
     uiOutput("select_preview_content"),
 
     uiOutput("select_language"),
