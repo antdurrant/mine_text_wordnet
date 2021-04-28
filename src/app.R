@@ -10,29 +10,14 @@ library(tesseract)
 library(writexl)
 
 
-# nope, can't get these working right, no idea how this works
 
-# # Create a virtual environment selecting your desired python version
-#  virtualenv_create(envname = "python_environment", python= "python3")
-# # # Explicitly install python libraries that you want to use, e.g. pandas, numpy
-#  virtualenv_install("python_environment", packages = c("nltk"))
-# # # Select the virtual environment
-#  use_virtualenv("python_environment")
-#
-# nltk <- reticulate::import("nltk")
-#
-# synsets <- nltk$wordnet$wordnet$synsets
-
-
-
-list_exp <- read_csv("./ref/list_exp.csv")
 
 # Define UI ####
 ui <-  fluidPage(
   ## theme ####
     theme =  shinytheme("cerulean"),
     h1("Produce word lists from text, word, or pdf"),
-    p("This tool will scrape text out of your pdfs or word files, or parse text that you type directly into the textbox."),
+    p("This tool will scrape text out of your pdfs or word files, or parse text that you type/paste directly into the textbox."),
 
 
   ## input data ####
@@ -71,13 +56,14 @@ ui <-  fluidPage(
       choices = c(
           "NGSL",
           "NGSL + NAWL (Academic)",
-          "NGSL + NBL (Business)",
+          "NGSL + BSL (Business)",
           "NGSL + TOEIC",
-          "NGSL + NBL + NAWL + TOEIC",
+          "NGSL + BSL + NAWL + TOEIC",
           "NGSL-35000",
           "Wikipedia-5000",
           "Flemma-5000",
-          "New Dolch List"
+          "New Dolch List",
+          "Oxford-5000"
         )
       ),
     uiOutput("filter_list"),
@@ -87,7 +73,7 @@ ui <-  fluidPage(
    mainPanel(
 
   ## about the list ####
-    textOutput("list_exp"),
+    htmlOutput("list_exp"),
 
 
   ## preview ####
@@ -278,7 +264,18 @@ server <- function(input, output) {
 
     # output list explanation ####
   output$list_exp <- renderText({
-  list_exp %>% filter(list == input$word_list) %>% pull(exp)
+  case_when(
+    input$word_list == "NGSL" ~ NGSL,
+    input$word_list == "NGSL + NAWL (Academic)" ~ NAWL,
+    input$word_list == "NGSL + TOEIC" ~ TOEIC,
+    input$word_list == "NGSL + BSL (Business)" ~ BSL,
+    input$word_list == "NGSL + BSL + NAWL + TOEIC" ~ et_al,
+    input$word_list == "NGSL-35000" ~ NGSL35000,
+    input$word_list == "Wikipedia-5000" ~ wiki5,
+    input$word_list == "Flemma-5000" ~ flemma5,
+    input$word_list == "New Dolch List" ~ dolch,
+    input$word_list == "Oxford-5000" ~ ox5,
+  )
 } )
 
   # output filter list
@@ -303,9 +300,9 @@ server <- function(input, output) {
           word.lists::list_academic
         } else if(input$word_list == "NGSL + TOEIC" ){
           word.lists::list_toeic
-        } else if (input$word_list == "NGSL + NBL (Business)"){
+        } else if (input$word_list == "NGSL + BSL (Business)"){
           word.lists::list_business
-        } else if(input$word_list == "NGSL + NBL + NAWL + TOEIC"){
+        } else if(input$word_list == "NGSL + BSL + NAWL + TOEIC"){
           word.lists::list_general_plus
         } else if(input$word_list ==  "NGSL-35000"){
           word.lists::list_ngsl_all
@@ -315,6 +312,8 @@ server <- function(input, output) {
           word.lists::list_flemma
         } else if(input$word_list == "New Dolch List"){
           word.lists::list_dolch
+        } else if(input$word_list == "Oxford-5000"){
+          word.lists::list_oxford
         }
   })
 
@@ -362,11 +361,9 @@ server <- function(input, output) {
           get_wordlist(language = input$lang,
                        def = input$def) %>%
           left_join(list_def()) %>%
-          mutate(group = case_when(is.na(group) & str_detect(lemma, "[0-9]") ~ "NUM",
-                                   is.na(group) & upos == "SYM"              ~ "NON-WORD",
-                                   is.na(group)                              ~ "OFF LIST",
-                                   TRUE                                      ~ as.character(group))
-          ) %>%          filter(group %in% input$filter_groups) %>%
+          filter(upos != "SYM") %>%
+          add_off_list_groups() %>%
+          filter(group %in% input$filter_groups) %>%
           select(group, everything()) %>%
           select(-doc_id, -sentence_id, -token_id, -pos, -sentence, -on_list, -contains("rank"))
 
@@ -408,10 +405,8 @@ server <- function(input, output) {
       get_wordlist(language = input$lang,
                     def = input$def) %>%
       left_join(list_def()) %>%
-      mutate(group = case_when(is.na(group) & str_detect(lemma, "[0-9]") ~ "NUM",
-                               is.na(group)                              ~ "OFF LIST",
-                               TRUE                                      ~ as.character(group))
-             ) %>%
+      filter(upos != "SYM") %>%
+      add_off_list_groups() %>%
       distinct(group, lemma, .keep_all = TRUE) %>%
       filter(group %in% input$filter_groups) %>%
       select(group, everything()) %>%
@@ -442,7 +437,144 @@ server <- function(input, output) {
 
 
 
+NGSL <-  glue::glue('{p()}{tags$a(href = "https://www.newgeneralservicelist.org", "New General Service List")}
+{p()} Difficulty groupings have been arbitrarily set as follows:
+{p()}
+- Group 1: first 500 words of NGSL by frequency & supplementary words - months/numbers etc {br()}
+- Group 2: next 500 words of NGSL by frequency{br()}
+- Group 3: next 1000 words of NGSL by frequency {br()}
+- Group 4: remaining NGSL words by frequency (about 800 words)
 
+{p()} Author Attribution: {br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List. {br()}
+Retrieved from: http://www.newgeneralservicelist.org.
+{br()}
+{br()}
+{br()}')
+
+NAWL <-   glue::glue('{p()}{tags$a(href = "https://www.newgeneralservicelist.org/nawl-new-academic-word-list/", "New Academic Word List (NAWL) & New General Service List (NGSL)")}
+{p()}
+Difficulty groupings have been arbitrarily set as follows:
+{p()}
+- Group 1: first 500 words of NGSL by frequency & supplementary words - months/numbers etc {br()
+- Group 2: next 500 words of NGSL by frequency {br()}
+- Group 3: next 1000 words of NGSL by frequency {br()}
+- Group 4: remaining NGSL words by frequency (about 800 words) {br()}
+- Group 5: academic word list (about 950 words)
+
+{p()}
+Author Attribution: {br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New Academic Word List. {br()}
+Retrieved from: http://www.newgeneralservicelist.org." {br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List.
+{br()}
+Retrieved from: http://www.newgeneralservicelist.org.
+{br()}{br()}{br()}')
+
+BSL <- glue::glue('{p()}{tags$a(href = "https://www.newgeneralservicelist.org/bsl-business-service-list", "Business Service List (BSL) & New General Service List (NGSL)")}
+{p()}, Difficulty groupings have been arbitrarily set as follows:
+{p()}
+- Group 1: first 500 words of NGSL by frequency & supplementary words - months/numbers etc {br()}
+- Group 2: next 500 words of NGSL by frequency {br()}
+- Group 3: next 1000 words of NGSL by frequency {br()}
+- Group 4: remaining NGSL words by frequency (about 800 words){br()}
+- Group 5: business service list (about 1750 words)
+
+{p()}
+Author Attribution: {br()}
+Browne, C., and  Culligan, B. (2016). The Business Service List. {br()}
+Retrieved from: http://www.newgeneralservicelist.org.{br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List.{br()}
+Retrieved from: http://www.newgeneralservicelist.org.
+{br()}{br()}{br()}')
+
+TOEIC <- glue::glue('{p()}{tags$a(href = "http://www.newgeneralservicelist.org/toeic-list", "TOEIC Service List & New General Service List (NGSL)")}
+{p()}
+Difficulty groupings have been arbitrarily set as follows:
+{p()}
+- Group 1: first 500 words of NGSL by frequency & supplementary words - months/numbers etc {br()}
+- Group 2: next 500 words of NGSL by frequency {br()}
+- Group 3: next 1000 words of NGSL by frequency {br()}
+- Group 4: remaining NGSL words by frequency (about 800 words)" {br()}
+- Group 5: TOEIC service list (about 1250 words)
+
+{p()}
+Author Attribution: {br()}
+Browne, C., and  Culligan, B. (2016). The TOEIC Service List.{br()}
+Retrieved from: http://www.newgeneralservicelist.org. {br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List. {br()}
+Retrieved from: http://www.newgeneralservicelist.org.
+{br()}{br()}{br()}')
+
+et_al <- glue::glue('{p()}{tags$a(href = "http://www.newgeneralservicelist.org/toeic-list", "TOEIC, Business, Academic & New General Service List (NGSL)")}
+{p()}
+A combined group of the lists, for general-higher-level learners. Difficulty groupings have been arbitrarily set as follows:
+{p()}
+- Group 1: first 500 words of NGSL by frequency & supplementary words - months/numbers etc {br()}
+- Group 2: next 500 words of NGSL by frequency {br()}
+- Group 3: next 1000 words of NGSL by frequency {br()}
+- Group 4: remaining NGSL words by frequency (about 800 words) {br()}
+- Group 5: BSL, NAWL, TOEIC service lists (about 2800 words)
+
+{p()}
+Author Attribution: {br()}
+Browne, C., and  Culligan, B. (2016). The Business Service List. {br()}
+Retrieved from: http://www.newgeneralservicelist.org. {br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New Academic Word List.{br()}
+Retrieved from: http://www.newgeneralservicelist.org. {br()}
+Browne, C., and  Culligan, B. (2016). The TOEIC Service List.{br()}
+Retrieved from: http://www.newgeneralservicelist.org. {br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List.{br()}
+Retrieved from: http://www.newgeneralservicelist.org.{br()}{br()}{br()}')
+
+NGSL35000 <- glue::glue('{p()}{tags$a(href = "http://www.newgeneralservicelist.org/toeic-list", "TOEIC Service List & New General Service List (NGSL)")}
+{p()} Difficulty groupings have been arbitrarily set as follows:
+{p()}
+- Group 1: first 500 words of NGSL by frequency & supplementary words - months/numbers etc {br()}
+- Group 2: next 500 words of NGSL by frequency {br()}
+- Group 3: next 1000 words of NGSL by frequency {br()}
+- Group 4: remaining NGSL words by frequency (about 800 words) + NAWL (about 900 words) {br()}
+- Groups 5-13: frequency groupings by first significant digit of rank (8,000-8,999, 9,000-9,999, 10,000-19,999, 20,000-29,999 etc)
+
+{p()}
+Author Attribution: {br()}
+Browne, C., Culligan, B. & Phillips, J. (2013). The New General Service List.{br()}
+Retrieved from: http://www.newgeneralservicelist.org.{br()}{br()}{br()}')
+
+wiki5 <- "A dataset containing the 5000 most frequent words according to wikipedia in 2019. Groups are separated by the thousand."
+
+flemma5 <- glue::glue(' A dataset containing the 5000 most frequent flemmas
+(form-based-lemma - lemmas that can have multiple meanings with the same form)
+taken from Tom Cobb\'s wonderful lextutor site. Groups are separated by the hundred.
+This list is specifically targeted at graded readers.
+{p()}
+Author Attribution: {br()}
+https://www.lextutor.ca/vp/comp/bnc_info.html {br()}
+https://www.lextutor.ca/vp/comp/ {br()}
+https://www.laurenceanthony.net/software/antconc/
+{br()}{br()}{br()}')
+
+dolch <- glue::glue('{p()}{tags$a(href = "http://www.newgeneralservicelist.org/new-dolch-list", "New Dolch List")}
+{p()}
+As the Dolch List focuses specifically on the absolute most useful words,
+it has not been split into difficulty groups, though it would be possible to do so.
+Please make contact if that would be useful to you.
+{p()}
+This list contains the headwords and all members of the word families included in the <b>for researchers download<b> from the source.')
+
+ox5 <- glue::glue(' A dataset containing the 5000 most frequent words for British and American English
+according to Oxford University Press. Words with multiple POS are given one row per POS.
+These often have different CEFR levels in this list. Where lemma and pos have two meanings with different CEFR levels,
+the lower is used. {br()}
+Groups are separated by CEFR level:  {br()}
+- Group 1: A1 (1061 words) {br()}
+- Group 2: A2(989 words) {br()}
+- Group 3: B1 (906 words) {br()}
+- Group 4: B2 (1569 words) {br()}
+- Group 5: C1 (1391 words).
+{p()}
+Source: https://www.oxfordlearnersdictionaries.com/wordlists/oxford3000-5000
+{br()}{br()}{br()}')
 
 
 }
