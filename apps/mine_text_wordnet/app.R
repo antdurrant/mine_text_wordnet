@@ -9,8 +9,7 @@ library(tidyverse)
 library(tesseract)
 library(writexl)
 
-
-
+use_python("~/opt/conda/bin/python3.7")
 
 # Define UI ####
 ui <-  fluidPage(
