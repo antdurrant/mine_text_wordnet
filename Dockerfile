@@ -42,7 +42,11 @@ ENV NLTK_DATA /usr/lib/nltk_data
 COPY src/setup.R /
 RUN Rscript setup.R && rm setup.R
   
-COPY apps /srv/shiny-server/
+COPY apps/mine_text_wordnet /srv/shiny-server/
+
+RUN rm /srv/shiny-server/index.html
+
+RUN rm -rf /srv/shiny-server/sample-apps
 
 EXPOSE 3838
 

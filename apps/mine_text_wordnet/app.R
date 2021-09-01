@@ -9,7 +9,7 @@ library(tidyverse)
 library(tesseract)
 library(writexl)
 
-use_python("~/opt/conda/bin/python3.7")
+# use_python("~/opt/conda/bin/python3.7")
 
 # Define UI ####
 ui <-  fluidPage(
@@ -24,7 +24,7 @@ ui <-  fluidPage(
                 "Select your text-type:",
                 choices = c("typed-text",
                             "pdf-digital",
-                            "pdf-scan",
+                            # "pdf-scan",
                             "ms-word")
                 ),
     uiOutput("type_exp"),
@@ -153,7 +153,7 @@ server <- function(input, output) {
         input$type_of_text == "pdf-digital" ~ "This will extract embedded text from digitally produced pdfs. Scans will come out with gibberish.",
         input$type_of_text == "pdf-scan" ~ "This will attempt to extract text from your pdf using Tesseract's OCR engine. If the scan is not very clean, it will struggle. This will also take a long time; don't bother trying with files more than ~5 pages long.",
         input$type_of_text == "ms-word" ~ "This will pull the text out of your Word file. It will not read any text in images in your file.",
-        input$type_of_text == "typed-text" ~ "This will use the text you type in the box.",
+        # input$type_of_text == "typed-text" ~ "This will use the text you type in the box.",
         TRUE ~ "")
         })
 
@@ -177,7 +177,7 @@ server <- function(input, output) {
 
         case_when(
             input$type_of_text == "pdf-digital" ~ pdf_input,
-            input$type_of_text == "pdf-scan"    ~ pdf_input,
+            # input$type_of_text == "pdf-scan"    ~ pdf_input,
             input$type_of_text == "ms-word"     ~ word_input,
             input$type_of_text == "typed-text"  ~ text_input
             )
@@ -283,7 +283,7 @@ server <- function(input, output) {
     checkboxGroupInput(
       "filter_groups",
       "Groups to include in wordlist:",
-      choices =c("OFF LIST", "NUM", "NON-WORD", sort(unique(list_def()$group))),
+      choices = c("OFF-LIST", "NUM", "NON-WORD", sort(unique(list_def()$group))),
       selected = c( unique(list_def()$group))
     )
   })
@@ -321,7 +321,8 @@ server <- function(input, output) {
 
     withProgress( message = "reading file..." , {
 
-      if(input$type_of_text %in% c("pdf-digital", "pdf-scan")){
+
+     if(input$type_of_text %in% c("pdf-digital", "pdf-scan")){
         req(input$pdf$datapath)
         if(input$type_of_text == "pdf-digital") {
           tibble(text = pdftools::pdf_text(input$pdf$datapath)) %>%
