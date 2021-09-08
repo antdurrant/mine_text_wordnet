@@ -43,6 +43,7 @@ COPY src/setup.R /
 RUN Rscript setup.R && rm setup.R
   
 COPY apps/mine_text_wordnet /srv/shiny-server/
+COPY shiny-customized.config /etc/shiny-server/shiny-server.conf
 
 RUN rm /srv/shiny-server/index.html
 
