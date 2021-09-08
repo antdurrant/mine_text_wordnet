@@ -48,5 +48,8 @@ RUN rm /srv/shiny-server/index.html
 
 RUN rm -rf /srv/shiny-server/sample-apps
 
+USER shiny
+
 EXPOSE 3838
 
+CMD ["/usr/bin/shiny-server"]
