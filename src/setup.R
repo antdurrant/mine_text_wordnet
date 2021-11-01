@@ -1,5 +1,6 @@
 options(warn=2)
 install.packages("remotes")
+install.packages("Rcpp")
 remotes::install_github("antdurrant/word.lists")
 install.packages("reticulate")
 install.packages("udpipe")

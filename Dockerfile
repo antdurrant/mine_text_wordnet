@@ -43,13 +43,19 @@ COPY src/setup.R /
 RUN Rscript setup.R && rm setup.R
   
 COPY apps/mine_text_wordnet /srv/shiny-server/
+COPY shiny-customized.config /etc/shiny-server/shiny-server.conf
 
 RUN rm /srv/shiny-server/index.html
 
 RUN rm -rf /srv/shiny-server/sample-apps
+
+USER shiny
 
 EXPOSE 3838
 
 
 RUN useradd shiny_user
 USER shiny_user
+
+CMD ["/usr/bin/shiny-server"]
+
