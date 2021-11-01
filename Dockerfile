@@ -50,3 +50,6 @@ RUN rm -rf /srv/shiny-server/sample-apps
 
 EXPOSE 3838
 
+
+RUN useradd shiny_user
+USER shiny_user
